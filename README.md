@@ -1,40 +1,46 @@
-# **PAGER**
+
+# Table of Contents 
+[Project Description](#project-description)
+
+[Project Key Features](#project-key-features)
+
+[Backend API service](#backend-api-service)
+
+[Technologies Used](#technologies-used)
+
+[Contributor](#contributor)
+
+
+# Project Description
 
 PAGER is a social app for ravers to connect and share experiences. The app allows users to join groups, discover upcoming events, make new friends, and chat with fellow ravers. With PAGER, you can easily find like-minded people to attend events with, join groups based on your music preferences, and even plan your own events. 
 
 I collaborated with 6 other engineers created this app from conception to implementation, testing and deployment.
 
 My main responsibilities in this project includes 
-    - Creation backend API services which supports 70% of platform's feature includes All Group Module and Individual Group Module
+    - Creation backend API services which supports 70% of platform's feature includes Homepage Module, All Group Module and Individual Group Module
     - Creation of detailed API documentation for frontend modules
-    - Implementation of data binding for All Group Module and Individual Group Module
+    - Implementation of data binding and filter for Homepage Module
     - Tech lead for technical decision making and daily debugging
 
 
-## Key Features
+## Project Key Features
 
 ### Firebase Services
 - Our team decided to use Firebase as it offered a wide variety of services for our product that can be easily integrated in our application such as real-time databases using Firestore, login and register account pages using Firebase Authentication , Real-time chat messages using Cloud Messaging and the ability to upload photos using Cloud Storage.
-- This allowed us to focus on the user experience without worrying about the backend services needed to run the application.
 
 ### Login
-
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/59150695/214371736-04101068-2797-4f48-893c-112f8b311588.gif)
-
-- Utilized Firebase Authentication for user sign in and sign up pages
+- Utilized Firebase Authentication for user sign in and sign up
 - Managed authentication screen stack flow for global state for authenticated users
-- Sign up creates user and corresponding data points in Firebase Firestore with information and profile image.
+- Sign up user and corresponding data points in Firebase Firestore with information and profile image
 
 ### User Profile
-
 - Main page showing the details of the signed-in user
-- Expanded view of friends with buttons to unfriend
-- Expanded view of user’s music tastes
+- Expanded view of friends and music tastes
 - Edit page to edit music tastes and description
 
-
 ### Homepage
-
 <img src="https://user-images.githubusercontent.com/112330601/215922513-145c0c86-cc62-4352-a341-44ac16473c3b.gif" width="157" height="340" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://user-images.githubusercontent.com/3084586/214103264-6895f564-0c7c-4467-8360-2d09d77bc950.png" width="157" height="340" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://user-images.githubusercontent.com/3084586/214104970-d2d0f62a-8f3c-4490-b05f-18951094615d.png" width="157" height="340" />
 
 - Swipe cards displaying groups attending events. Swipe right to join or left to pass.
@@ -42,31 +48,25 @@ My main responsibilities in this project includes
 - Filter cards based on size and vibe.
 
 ### Groups
-
 ### All Groups
-
 - Tabular design to view a user’s upcoming and attended groups
 - Tab for user to create their own group and upload group images
 
 ### Individual Groups
-
 - Overview of group details with members and brief schedule
 - Full schedule list where owner has the ability to add/delete plans
+- Each group has their own chatroom to discuss plans for their event within their group
 
-### Chat
+### Installation
+  To **build** and install all the dependencies
+```
+  npm install 
+```
 
-- Each individual group has their own chatrooms that they can talk with their respective members to discuss plans for their event.
-
-### Getting Started 
-
-1. Create a Firebase project at [Firebase](https://firebase.google.com/) and create a firestore, authentication with email and password, cloud storage, and cloud messaging.
-2. Input the Firebase SDK to the app’s dependencies. More details for how to do this step in the official [Firebase Documentation](https://firebase.google.com/docs/web/setup)
-3. Go into the client of our repo
-4. Run ```npm i``` in the terminal  
-
-1. Run npm run start into the terminal
-2. Go to [localhost:19006](http://localhost:19006) to access the app by hitting the "w" key in the terminal
-
+  To start
+ ```
+  expo start
+```
 
 ## Technologies
 
