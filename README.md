@@ -86,7 +86,7 @@ This is an overview of the API services I created to support Homepage, All Group
    - #### User requests to join a group
 	 ``` sendRequestToGroup(user_id, group_id) ```
      
-    - #### Group own invites friends to join his group
+  - #### Group own invites friends to join his group
 	 ``` invitePeopleToGroup(user_id, group_id) ```
      
   - #### Get all chat message for a specific group
