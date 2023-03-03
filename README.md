@@ -57,6 +57,57 @@ My main responsibilities in this project includes
 - Full schedule list where owner has the ability to add/delete plans
 - Each group has their own chatroom to discuss plans for their event within their group
 
+# Backend API service
+This is an overview of the API services I created to support Homepage, All Groups and Individual Group Module
+
+### Groups & Chat: 
+
+ - #### Get all groups info for a specific event
+    ``` getGroupsPerEvent(event_id)   ```
+ 
+ - #### Get all the pending request for a specific group
+	 ``` getPendingRequestPerGroup(group_id) ```
+ 
+  - #### Get all member info for a specific group
+	 ``` getGroupsPerUser(user_id) ```
+     
+  - #### Get all attended groups info for a specific user
+	 ``` getGroupsAttendedPerUser(user_id) ```
+     
+  - #### Get all upcoming groups info for a specific user
+	 ``` getGroupsUpcomingPerUser(user_id) ```
+     
+  - #### Get all members for a specific group
+	 ``` getGroupMembers(group_id) ```
+  
+   - #### Create a new group with all the infos
+	 ``` createGroup(formdata, organizer_id) ```
+     
+   - #### User requests to join a group
+	 ``` sendRequestToGroup(user_id, group_id) ```
+     
+    - #### Group own invites friends to join his group
+	 ``` invitePeopleToGroup(user_id, group_id) ```
+     
+  - #### Get all chat message for a specific group
+	 ``` getChatMsgsPerGroup(group_id) ```
+     
+  - #### Add chat message for a specific group
+	 ``` addChatMsg(formdata) ```
+  
+   - #### Approve a user's join request 
+	 ``` acceptInGroup(user_id, group_id) ```
+     
+   - #### Get schedule for a specific group
+	 ``` getGroupPlans(group_id) ```
+
+   - #### Add a new plan to the schedule for a specific group 
+	 ``` addPlan(group_id, form_data) ```
+     
+   - #### Delete a plan from schedule for a specific group
+	 ``` deletePlan(group_id, plan_id) ```
+	 
+
 ### Installation
   To **build** and install all the dependencies
 ```
