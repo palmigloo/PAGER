@@ -8,7 +8,7 @@
 
 [Technologies Used](#technologies-used)
 
-[Contributor](#contributor)
+[Contributors](#contributors)
 
 
 # Project Description
@@ -68,7 +68,7 @@ My main responsibilities in this project includes
   expo start
 ```
 
-## Technologies
+## Technologies Used
 
 Frontend 
 
