@@ -57,6 +57,7 @@ My main responsibilities in this project includes
 - Tab for user to create their own group and upload group images
 
 ### Individual Groups
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/ba02e68d-9b7f-4c62-ae74-e32af6520d00" width="250" />  <img src="https://github.com/palmigloo/PAGER/assets/3084586/11af9fe7-4e89-4368-9dc7-b8035d515dfe" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/62dc5236-ada6-454c-8bfa-4be012017c24" width="253" /> 
 - Overview of group details with members and brief schedule
 - Full schedule list where owner has the ability to add/delete plans
 - Each group has their own chatroom to discuss plans for their event within their group
