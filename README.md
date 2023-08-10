@@ -31,19 +31,19 @@ My main responsibilities in this project includes
 - Our team decided to use Firebase as it offered a wide variety of services for our product that can be easily integrated in our application such as real-time databases using Firestore, login and register account pages using Firebase Authentication , Real-time chat messages using Cloud Messaging and the ability to upload photos using Cloud Storage.
 
 ### Login
-<img src="https://github.com/palmigloo/PAGER/assets/3084586/45ff903f-1466-4eef-bb6a-893ef97c8587" width="315" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/413291d4-d6f6-4f4b-904c-5f4f65b55f03" width="305" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/1a9cc4f3-aaa5-4c5e-a4d0-9d2ae12c74a9" width="300" />
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/45ff903f-1466-4eef-bb6a-893ef97c8587" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/413291d4-d6f6-4f4b-904c-5f4f65b55f03" width="240" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/1a9cc4f3-aaa5-4c5e-a4d0-9d2ae12c74a9" width="238" />
 - Utilized Firebase Authentication for user sign in and sign up
 - Managed authentication screen stack flow for global state for authenticated users
 - Sign up user and corresponding data points in Firebase Firestore with information and profile image
 
 ### User Profile
-<img src="https://github.com/palmigloo/PAGER/assets/3084586/a5d66789-4fc9-4cb1-a409-d677bf563b5e" width="303" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/342d41b8-0a6a-4225-9b33-e1d6f1325fd3" width="300" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/4ed41495-2649-4607-9475-1d27aaa7b7fb" width="300" />
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/a5d66789-4fc9-4cb1-a409-d677bf563b5e" width="253" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/342d41b8-0a6a-4225-9b33-e1d6f1325fd3" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/4ed41495-2649-4607-9475-1d27aaa7b7fb" width="250" />
 - Main page showing the details of the signed-in user
 - Expanded view of friends and music tastes
 - Edit page to edit music tastes and description
 
 ### Homepage
-<img src="https://github.com/palmigloo/PAGER/assets/3084586/f15149e1-3a49-44d9-8e40-767d1ca8f355" width="300" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/314ecd52-ce08-4397-aa2d-5e1dd2877821" width="298" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/ba02e68d-9b7f-4c62-ae74-e32af6520d00" width="303" /> 
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/f15149e1-3a49-44d9-8e40-767d1ca8f355" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/314ecd52-ce08-4397-aa2d-5e1dd2877821" width="248" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/ba02e68d-9b7f-4c62-ae74-e32af6520d00" width="253" /> 
 
 - Swipe cards displaying groups attending events. Swipe right to join or left to pass.
 - Card expanded view, showing additional information about the group.
