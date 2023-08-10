@@ -38,7 +38,10 @@ My main responsibilities in this project includes
 - Sign up user and corresponding data points in Firebase Firestore with information and profile image
 
 ### User Profile
-<img src="https://github.com/palmigloo/PAGER/assets/3084586/a5d66789-4fc9-4cb1-a409-d677bf563b5e" width="253" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/342d41b8-0a6a-4225-9b33-e1d6f1325fd3" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/4ed41495-2649-4607-9475-1d27aaa7b7fb" width="250" />
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/89e252b0-b4b2-4a73-807e-3e6bf0cc770f" width="253" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/0708efd8-ff96-4d66-a3ad-19a483a6c8b4" width="250" /> <br>
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/e513186b-f71f-4804-be4f-32194e4afcce" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/85e8afdf-e153-4762-8014-79fb30ddd858" width="250" />
+
+
 - Main page showing the details of the signed-in user
 - Expanded view of friends and music tastes
 - Edit page to edit music tastes and description
