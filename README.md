@@ -19,10 +19,11 @@ PAGER is a social app for ravers to connect and share experiences. The app allow
 I collaborated with 6 other engineers created this app from conception to implementation, testing and deployment.
 
 My main responsibilities in this project includes 
-    - Creation backend API services which supports 70% of platform's feature includes Homepage Module, All Group Module and Individual Group Module
-    - Creation of detailed API documentation for frontend modules
-    - Implementation of data binding and filter for Homepage Module
-    - Tech lead for technical decision making and daily debugging
+- Creation backend API services which supports 70% of platform's feature includes Homepage Module, All Group Module and Individual Group Module
+- UI Design + Improvement
+- Creation of detailed API documentation for frontend modules
+- Implementation of data binding and filter for Homepage Module
+- Tech lead for technical decision making and daily debugging
 
 
 ## Project Key Features
@@ -51,6 +52,7 @@ My main responsibilities in this project includes
 
 ### Groups
 ### All Groups
+<img src="https://github.com/palmigloo/PAGER/assets/3084586/9b15096a-d66a-4d83-99cd-70dddad0bb2f" width="250" /> <img src="https://github.com/palmigloo/PAGER/assets/3084586/267d6d7a-6f13-4054-b8b0-11e4f02e9f89" width="248" />
 - Tabular design to view a user’s upcoming and attended groups
 - Tab for user to create their own group and upload group images
 
