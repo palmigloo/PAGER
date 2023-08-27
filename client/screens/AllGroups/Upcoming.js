@@ -8,6 +8,7 @@ import {
   ScrollView,
   FlatList,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/Feather';
@@ -22,16 +23,17 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    flexGrow: 1,
+    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    overflowY: 'scroll',
+    overflow: 'scroll',
   },
   textHeader: {
     fontSize: 24,
     paddingTop: 15,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   separation: {
     width: '90%',
@@ -43,14 +45,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingTop: 15,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   groupName: {
-    fontSize: 22,
-    fontFamily: 'Poppins',
+    fontSize: 20,
+    fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   groupImg: {
     height: 100,
     width: 100,
+    borderRadius: 30,
+    borderColor: 'white',
+    borderWidth: '1.5',
   },
   renderGroupContainer: {
     display: 'flex',
@@ -76,15 +83,25 @@ const styles = StyleSheet.create({
 const Upcoming = ({ navigation }) => {
   const [upcomingUserGroups, setUpcomingUserGroups] = useState([]);
   const { userId } = useSelector((state) => state.pagerData);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+    console.log('refreshing');
+    let groups = await getGroupsUpcommingPerUser(userId);
+    setUpcomingUserGroups(groups);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await getGroupsUpcommingPerUser('DMuiKcBDEA0q95QHzbJq');
-      setUpcomingUserGroups(response); // -- GET
+      const response = await getGroupsUpcommingPerUser(userId);
+      setUpcomingUserGroups(response);
     }
     fetchData();
   }, []);
-  // console.log('does this work?', upcomingUserGroups);
 
   const [fontLoaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -97,9 +114,14 @@ const Upcoming = ({ navigation }) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <Text style={styles.textHeader}>GROUPS</Text>
-      <View style={styles.separation} />
+      {/* <View style={styles.separation} /> */}
       <View style={{ alignSelf: 'flex-start', width: '90%', paddingLeft: 18 }}>
         <Text style={styles.featureHeader}>UPCOMING</Text>
       </View>
@@ -107,21 +129,37 @@ const Upcoming = ({ navigation }) => {
         <FlatList
           data={upcomingUserGroups}
           keyExtractor={(groups) => groups.id.toString()}
-          contentContainerStyle={{ width: 350, display: 'flex', flexDirection: 'column', alignItems: 'center'/* , border: '2px solid blue' */ }}
+          contentContainerStyle={{
+            width: 350,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center' /* , border: '2px solid blue' */,
+          }}
           // numColumns={2}
           renderItem={({ item }) => (
             // console.log('group ID :', item.id)
-            <View key={item.id} style={{ width: 350 }}>
+            <View key={Math.random()} style={{ width: 350 }}>
               <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('IndividualGroupsIndex', item)}
+                onPress={() =>
+                  navigation.navigate('IndividualGroupsIndex', item)
+                }
               >
                 <View style={styles.groupContainer}>
-                  <Image style={styles.groupImg} source={{ uri: item.group_image }} />
-                  <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Image
+                    style={styles.groupImg}
+                    source={{ uri: item.group_image }}
+                  />
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Text style={styles.groupName}>{item.group_name}</Text>
                     {/* <Text style={styles.groupName}>{item.event_name}</Text> */}
                   </View>
-                  <Icon name="chevron-right" size={30} color="#000000" />
+                  <Icon name="chevron-right" size={30} color="white" />
                 </View>
               </TouchableWithoutFeedback>
             </View>
