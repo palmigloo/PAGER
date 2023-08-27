@@ -4,29 +4,36 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
-  StyleSheet, Text, View, SafeAreaView, ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Alert,
 } from 'react-native';
-import { Form, FormItem, Picker, Modal, Label } from 'react-native-form-component';
+import {
+  Form,
+  FormItem,
+  Picker,
+  Modal,
+  Label,
+} from 'react-native-form-component';
 import { useFonts } from 'expo-font';
 import { useSelector } from 'react-redux';
 import * as DocumentPicker from 'expo-document-picker';
 import Loading from '../Loading/Index.js';
-import {
-  getGroupsPerUser,
-  getGroupsAttendedPerUser,
-  getGroupsUpcommingPerUser,
-  createGroup,
-} from '../../db/group';
+import { createGroup } from '../../db/group';
 import { getAllEvents } from '../../db/event';
 import { getUser } from '../../db/user';
+import tw from '../../tailwind.js';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    overflowY: 'scroll',
+    overflow: 'scroll',
   },
   textHeader: {
     fontSize: 24,
@@ -41,64 +48,58 @@ const styles = StyleSheet.create({
   },
   featureHeader: {
     fontSize: 20,
-    paddingTop: 15,
+    paddingVertical: 15,
+
     fontFamily: 'PoppinsBold',
   },
-  formStyle1: {
-    display: 'flex',
-    // borderWidth: 2,
-    // borderColor: 'blue',
-    margin: 0,
-  },
-  formStyle2: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    // borderWidth: 2,
-    // borderColor: 'red',
-    margin: 0,
+  formStyle: {
+    marginVertical: -35,
   },
   formInput: {
-    // flex: 1,
-    backgroundColor: '#fff',
-    // border: '3px solid blue',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'Poppins',
+    borderBottomWidth: 0.5,
+    borderColor: 'grey',
+    // fontSize: 18,
   },
-  btnStyleSubmit: {
+  // top: {
+  //   backgroundColor: 'grey',
+  //   fontSize: 16,
+  //   fontFamily: 'Poppins',
+  // },
+  btnStyleUpload: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    backgroundColor: '#F72585',
+    backgroundColor: 'white',
     fontFamily: 'PoppinsBold',
     color: 'white',
-    borderRadius: 0,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'grey',
   },
   btnTextStyleSubmit: {
     fontFamily: 'PoppinsBold',
     color: 'white',
   },
-  btnStyleUpload: {
+  btnStyleSubmit: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    backgroundColor: '#4895EF',
+    backgroundColor: 'black',
     fontFamily: 'PoppinsBold',
     color: 'white',
-    borderRadius: 0,
+    borderRadius: 20,
+    cursor: 'pointer',
   },
   btnTextStyleUpload: {
     fontFamily: 'PoppinsBold',
-    color: 'white',
+    color: 'black',
     fontSize: 14,
   },
 });
 
-const Create = () => {
+const Create = ({ navigation }) => {
   const [userData, setUserData] = useState('');
   const [groupName, setGroupName] = useState('');
   const [groupDescription, setGroupDescription] = useState('');
@@ -110,6 +111,7 @@ const Create = () => {
 
   const [allEvents, setAllEvents] = useState([]);
   const { userId } = useSelector((state) => state.pagerData);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const groupNameInput = useRef();
   const groupDescriptionInput = useRef();
@@ -119,7 +121,6 @@ const Create = () => {
     async function fetchData() {
       const response = await getAllEvents();
       const userData = await getUser(userId);
-      // setAllEvents(response);
       const reformatEvents = await response.reduce((acc, eventObj) => {
         const newEvent = {
           label: eventObj.event_name,
@@ -146,12 +147,11 @@ const Create = () => {
 
   const pickDocument = async () => {
     const result = await DocumentPicker.getDocumentAsync({});
-    // console.log('image upload : ', result);
     setGroupImg(result);
   };
 
   // -- 1/19 fix group image upload, opens docs on ios
-  const submitFormData = () => {
+  const submitFormData = async () => {
     const newGroupFormData = {
       event_date: event.event_date,
       event_id: event.id,
@@ -164,26 +164,45 @@ const Create = () => {
       size,
       vibe,
     };
-    createGroup(newGroupFormData, userId);
+    setModalVisible(!modalVisible);
+    await createGroup(newGroupFormData, userId);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.textHeader}>GROUPS</Text>
-      <View style={styles.separation} />
-      <View style={{ alignSelf: 'flex-start', width: '90%', paddingLeft: 18, paddingBottom: 18 }}>
+      <Modal
+        animationType="slide"
+        visible={!modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <Text>yes</Text>
+      </Modal>
+      <View
+        style={{
+          alignSelf: 'flex-start',
+          width: '90%',
+          paddingLeft: 18,
+        }}
+      >
         <Text style={styles.featureHeader}>CREATE GROUP</Text>
       </View>
-      <View>
+      <View style={tw`w-4/5`}>
         <Form
-          onButtonPress={() => { submitFormData(); }}
+          onButtonPress={() => {
+            submitFormData();
+            navigation.navigate('Upcoming');
+          }}
           buttonText="CREATE GROUP"
           buttonStyle={styles.btnStyleSubmit}
           buttonTextStyle={styles.btnTextStyleSubmit}
-          style={styles.formStyle1}
+          // style={styles.formStyle}
         >
           <FormItem
-            style={styles.formInput}
+            textInputStyle={styles.formInput}
             id="group-name"
             placeholder="GROUP NAME"
             isRequired
@@ -192,16 +211,18 @@ const Create = () => {
             ref={groupNameInput}
           />
           <FormItem
-            style={styles.formInput}
+            textInputStyle={styles.formInput}
             id="group-description"
             placeholder="GROUP DESCRIPTION"
             isRequired
             value={groupDescription}
-            onChangeText={(groupDescription) => setGroupDescription(groupDescription)}
+            onChangeText={(groupDescription) =>
+              setGroupDescription(groupDescription)
+            }
             ref={groupDescriptionInput}
           />
           <Picker
-            style={styles.formInput}
+            itemLabelStyle={styles.top}
             id="select-size"
             placeholder="SELECT SIZE"
             items={[
@@ -232,12 +253,15 @@ const Create = () => {
             selectedValue={event}
             onSelection={(item) => setEvent(item.value)}
           />
+
           <Form
-            onButtonPress={() => { pickDocument(); }}
+            onButtonPress={() => {
+              pickDocument();
+            }}
             buttonText="UPLOAD IMAGE"
             buttonStyle={styles.btnStyleUpload}
             buttonTextStyle={styles.btnTextStyleUpload}
-            style={styles.formStyle2}
+            style={styles.formStyle}
           />
         </Form>
       </View>
@@ -248,17 +272,3 @@ const Create = () => {
 };
 
 export default Create;
-
-// event_date -- DONE
-// event_id -- DONE
-// group_image -- DONE
-// group_name -- DONE
-// group_description -- DONE
-// member_list : user's user_id -- DONE ARRAY
-// organizer_id : user's user_id -- DONE
-// organizer_name : user's user_name --get request for user info using ID -- DONE
-// size: string -- DONE
-// vibe: string -- DONE
-
-// ** object with key/value pairs -- named the same
-// react FILE compoenent -- click a button for you to select your image
