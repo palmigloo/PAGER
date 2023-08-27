@@ -27,8 +27,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     overflow: 'scroll',
     backgroundColor: 'white',
-    // borderWidth: 1,
-    // borderColor: 'black',
   },
   bodyContainerName: {
     flexDirection: 'row',
@@ -36,14 +34,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     margin: 5,
-    // borderWidth: 1,
-    // borderColor: 'black',
   },
   headerImage: {
     width: 75,
     height: 75,
     marginRight: 15,
     marginVertical: 15,
+    borderRadius: 20,
   },
   headerName: {
     fontSize: 25,
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
 
 const Schedule = ({ route }) => {
   const [group, setGroup] = useState();
-  console.log('what is route params in schedule', route.params);
+  //console.log('what is route params in schedule', route.params);
 
   useEffect(() => {
     setGroup(route.params);
