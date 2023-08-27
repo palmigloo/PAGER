@@ -1,6 +1,7 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
+
 import { useSelector } from 'react-redux';
 import {
   StyleSheet,
@@ -9,66 +10,61 @@ import {
   ScrollView,
   Image,
   Pressable,
-  CheckBox,
-  Alert,
-  Button,
   TouchableWithoutFeedback,
   FlatList,
 } from 'react-native';
 import { useFonts } from 'expo-font';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
+import tw from '../../tailwind';
 import { getUser } from '../../db/user.js';
 import Loading from '../Loading/Index.js';
-import globalStyles from '../../globalStyles';
-import emptyBox from '../../assets/box.png';
 import Card from './Card';
-import TasteCard from './TasteCard';
-import { useAuthentication } from '../../utils/hooks/useAuthentication';
 
 const auth = getAuth();
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    overflowY: 'scroll',
-    backgroundColor: 'white',
-    overflowX: 'hidden',
-  },
-  headerImage: {
-    width: 200,
-    height: 200,
-    marginTop: 10,
+    backgroundColor: 'black',
+    // overflowX: 'hidden',
+    overflow: 'scroll',
   },
   headerName: {
-    fontSize: 30,
+    fontSize: 25,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   bodyContainerCenter: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     marginVertical: 5,
     marginHorizontal: 15,
-    // borderWidth: 1,
-    // borderColor: 'black',
   },
   bodyContainerLeft: {
-    width: '100%',
+    margin: 5,
+    width: '90%',
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    // borderWidth: 0.5,
+    borderColor: 'grey',
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   bodyContainerRight: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'flex-end',
-    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    backgroundColor: 'black',
     paddingVertical: 10,
     paddingHorizontal: 20,
     textDecorationLine: 'underline',
@@ -78,59 +74,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     paddingVertical: 5,
     paddingHorizontal: 15,
     marginBottom: 5,
     // borderWidth: 1,
     // borderColor: 'red',
   },
-  bodyContainerRow: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    marginBottom: 5,
-  },
-  bodyContainerSchedule: {
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
-    // paddingVertical: 0,
-    // paddingHorizontal: 15,
-  },
-  bodyContainerMember: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: 'white',
-    // paddingVertical: 0,
-    // paddingHorizontal: 15,
-  },
   taste: {
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
+    backgroundColor: '#8DC9D8',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    width: '40%',
+    // width: '40%',
     padding: 15,
     flexWrap: 'wrap',
     marginVertical: 5,
-    margin: 'auto',
-    // borderWidth: 1,
-    // borderColor: 'red',
+    margin: 10,
+    borderRadius: 5,
   },
   button: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 32,
-    backgroundColor: '#F72585',
+    justifyContent: 'space-around',
     fontFamily: 'PoppinsBold',
     color: 'white',
     marginBottom: 5,
@@ -142,46 +106,32 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 20,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   textDetailBold: {
     fontSize: 15,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   textDetail: {
     fontSize: 15,
     fontFamily: 'Poppins',
+    color: 'white',
   },
   textDetailUnderline: {
     fontSize: 15,
     fontFamily: 'Poppins',
     textDecorationLine: 'underline',
-  },
-  memberImage: {
-    width: 75,
-    height: 75,
-  },
-  filterOptionContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '40%',
-    backgroundColor: '#F5F5F5',
-    borderWidth: 1,
-    borderColor: 'black',
-    paddingHorizontal: 5,
-    marginBottom: 15,
-    marginHorizontal: 5,
+    color: 'white',
   },
   filterContainer: {
-    // flex: 1,
-    width: '100%',
     flexDirection: 'row',
-    // flexWrap: 'wrap',
-    alignItems: 'space-between',
     justifyContent: 'center',
+    alignItems: 'center',
     margin: 10,
+    gap: 15,
     // borderWidth: 1,
-    // borderColor: 'blue',
+    // borderColor: 'red',
   },
 });
 
@@ -191,25 +141,25 @@ const Profile = ({ navigation, route }) => {
   const [musicTastes, setMusicTastes] = useState([]);
   const [friends, setFriends] = useState([]);
   const [description, setDescription] = useState('');
+  const [profile_pic, setProfile_pic] = useState();
+
+  async function fetchData(userId) {
+    const res = await getUser(userId);
+    console.log('the user id is : ', res[0]);
+    setUser(res[0]);
+    setMusicTastes(res[0].music_tastes);
+    setFriends(res[0].friends_list);
+    setDescription(res[0].description);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await getUser(userId);
-      // console.log(res[0], 'res');
-      setUser(res[0]);
-      setMusicTastes(res[0].music_tastes);
-      setFriends(res[0].friends_list);
-      setDescription(res[0].description);
-      // console.log(friends, 'friends');
-    }
-    fetchData();
+    fetchData(userId);
   }, []);
 
-  const onEdit = (data) => {
-    setDescription(data);
-  };
-  const onEdit1 = (data1) => {
-    setMusicTastes(data1);
-  };
+  // const onEdit = (data) => {
+  //   setDescription(data);
+
+  // };
 
   const [fontLoaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -221,72 +171,83 @@ const Profile = ({ navigation, route }) => {
     return <Loading />;
   }
   return (
-    // onPress={() => auth.signOut()}
+    // onPress={() => auth.signOut()
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.bodyContainerRight}>
-        <Pressable onPress={() => auth.signOut()}>
-          <Text style={styles.textDetailBold}>SIGN OUT</Text>
-        </Pressable>
-      </View>
-      <Image style={styles.headerImage} source={user.profile_pic} />
-      <View style={styles.bodyContainerCenter}>
-        <Text style={styles.headerName}>
-          {`${user.first_name} ${user.last_name}`}
-        </Text>
-      </View>
-      <Pressable
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate('EditProfile', { user, onEdit, onEdit1 })
-        }
-      >
-        <Text style={styles.buttonText}>EDIT PROFILE</Text>
-      </Pressable>
-      <View style={styles.bodyContainerLeft}>
-        <Text style={styles.textDetail}>{description}</Text>
-      </View>
-      <View style={styles.bodyContainerSection}>
-        <Text style={styles.textTitle}>MUSIC TASTES</Text>
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('ExpandedTastes', user)}
-        >
-          <Text style={styles.textDetailUnderline}>SEE ALL</Text>
-        </TouchableWithoutFeedback>
-      </View>
-      {/* <View style={styles.bodyContainerSection}> */}
-      <View style={styles.filterContainer}>
-        <FlatList
-          data={musicTastes.slice(0, 2)}
-          // keyExtractor={(events) => events.id.toString()}
-          numColumns={2}
-          renderItem={({ item }) => (
-            <View style={styles.taste}>
-              <Text style={styles.textDetailBold}>{item.toUpperCase()}</Text>
-            </View>
-          )}
-        />
-      </View>
-      <View style={styles.bodyContainerSection}>
-        <Text style={styles.textTitle}>FRIENDS</Text>
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate('ExpandedFriends', user)}
-        >
-          <Text style={styles.textDetailUnderline}>SEE ALL</Text>
-        </TouchableWithoutFeedback>
-      </View>
-      <View style={styles.bodyContainerSection}>
-        {!!friends &&
-          friends
-            .slice(0, 3)
-            .map((friend) => (
-              <Card
-                prop={friend}
-                key={Math.random()}
-                friends={friends}
-                setFriends={setFriends}
-              />
-            ))}
-      </View>
+      {user.profile_pic && (
+        <>
+          <View style={styles.bodyContainerRight}>
+            <Pressable
+              style={styles.button}
+              onPress={() =>
+                navigation.navigate('EditProfile', { user, fetchData })
+              }
+            >
+              <Text style={styles.textDetailBold}>EDIT PROFILE</Text>
+            </Pressable>
+            <Pressable onPress={() => auth.signOut()}>
+              <Text style={styles.textDetailBold}>SIGN OUT</Text>
+            </Pressable>
+          </View>
+          <Image
+            style={tw`rounded-full`}
+            height={200}
+            width={200}
+            source={{ uri: user.profile_pic }}
+          />
+          <View style={styles.bodyContainerCenter}>
+            <Text style={styles.headerName}>
+              {`${user.first_name && user.first_name} ${
+                user.last_name && user.last_name
+              }`}
+            </Text>
+          </View>
+
+          <View style={styles.bodyContainerLeft}>
+            <Text style={styles.textDetail}>{description}</Text>
+          </View>
+          <View style={styles.bodyContainerSection}>
+            <Text style={styles.textTitle}>MUSIC TASTES</Text>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('ExpandedTastes', user)}
+            >
+              <Text style={styles.textDetailUnderline}>SEE ALL</Text>
+            </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.filterContainer}>
+            {!!musicTastes &&
+              musicTastes.slice(0, 3).map((taste) => (
+                <View style={styles.taste}>
+                  <Text style={styles.textDetailBold}>
+                    {taste.toUpperCase()}
+                  </Text>
+                </View>
+              ))}
+          </View>
+          <View style={styles.bodyContainerSection}>
+            <Text style={styles.textTitle}>FRIENDS</Text>
+            <TouchableWithoutFeedback
+              onPress={() =>
+                navigation.navigate('ExpandedFriends', { user, fetchData })
+              }
+            >
+              <Text style={styles.textDetailUnderline}>SEE ALL</Text>
+            </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.bodyContainerSection}>
+            {friends[0] !== '' &&
+              friends
+                .slice(0, 3)
+                .map((friend) => (
+                  <Card
+                    prop={friend}
+                    key={friend.last_name}
+                    friends={friends}
+                    setFriends={setFriends}
+                  />
+                ))}
+          </View>
+        </>
+      )}
     </ScrollView>
   );
 };
