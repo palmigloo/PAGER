@@ -15,6 +15,7 @@ const auth = getAuth();
 
 const SignInScreen = () => {
   const { userId } = useSelector((state) => state.pagerData);
+  console.log('user id is : ', userId);
   const dispatch = useDispatch();
 
   const [value, setValue] = React.useState({
@@ -34,7 +35,7 @@ const SignInScreen = () => {
 
     try {
       const id = await getUserByEmail(value.email);
-      // console.log('the id inside signIn is: ', id);
+      console.log('the id inside signIn is: ', id);
       dispatch(updateUserId(id));
     } catch (error) {
       setValue({
@@ -55,7 +56,12 @@ const SignInScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={gif} resizeMode="cover" style={styles.image} imageStyle={{ opacity: 0.5 }}>
+      <ImageBackground
+        source={gif}
+        resizeMode="cover"
+        style={styles.image}
+        imageStyle={{ opacity: 0.5 }}
+      >
         {!!value.error && (
           <View style={styles.error}>
             <Text>{value.error}</Text>
