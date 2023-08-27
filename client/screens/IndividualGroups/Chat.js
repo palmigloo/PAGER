@@ -5,6 +5,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
+import { getUser } from '../../db/user';
 import {
   collection,
   addDoc,
@@ -49,9 +50,19 @@ const ChatStack = () => {
 
 const Chat = ({ navigation, groupData }) => {
   const { userId } = useSelector((state) => state.pagerData); // user_id global state
+  console.log('authchat is : ', authChat.currentUser);
   const [messages, setMessages] = useState([]);
   const [groupId, setGroupId] = useState(groupData.id);
-  const [name, setName] = useState('');
+  const [pic, setPic] = useState();
+
+  async function fetchData(userId) {
+    const res = await getUser(userId);
+    console.log('the user id is : ', res[0]);
+    setPic(res[0].profile_pic);
+  }
+  useEffect(() => {
+    fetchData(userId);
+  }, []);
 
   useLayoutEffect(() => {
     const collectionRef = collection(db, 'chat');
@@ -83,7 +94,7 @@ const Chat = ({ navigation, groupData }) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages),
     );
-    // group_id
+
     const { _id, createdAt, text, user } = messages[0];
     addDoc(collection(db, 'chat'), {
       _id,
@@ -100,8 +111,8 @@ const Chat = ({ navigation, groupData }) => {
       onSend={(messages) => onSend(messages)}
       user={{
         id: authChat?.currentUser?.email,
-        avatar:
-          'https://c8.alamy.com/zooms/9/9c30002a90914b58b785a537a39421ba/2c80ydc.jpg',
+        avatar: pic,
+        // 'https://c8.alamy.com/zooms/9/9c30002a90914b58b785a537a39421ba/2c80ydc.jpg',
         group_id: groupId,
         reaction: false,
       }}
