@@ -8,59 +8,55 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   Image,
   ScrollView,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useFonts } from 'expo-font';
 import globalStyles from '../../globalStyles';
-import {
-  getAllEvents,
-  getOneEvent,
-  addGroupToEvent,
-  removeGroupFromEvent,
-} from '../../db/event.js';
+import { getAllEvents } from '../../db/event.js';
 import { getGroupMembers, getGroupPlans, getGroup } from '../../db/group.js';
+import tw from '../../tailwind.js';
 import Loading from '../Loading/Index';
 
 const Overview = ({ navigation, groupData }) => {
   // styles
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
+      flexGrow: 1,
+      backgroundColor: 'black',
       alignItems: 'center',
-      // justifyContent: 'center',
-      borderColor: 'black',
-      // borderWidth: 10,
       padding: 10,
-      overflowY: 'scroll',
+      overflow: 'scroll',
       fontFamily: 'Poppins',
     },
     main: {
       height: 200,
       width: 200,
+      borderRadius: 30,
+      marginTop: 20,
     },
     name: {
       fontSize: 30,
       fontFamily: 'PoppinsBold',
+      color: 'white',
     },
     rowName: {
       flexDirection: 'row',
       width: '100%',
+      paddingVertical: 10,
     },
     boldDesc: {
       alignSelf: 'start',
       fontFamily: 'PoppinsBold',
       fontSize: 14,
+      color: 'white',
     },
     desc: {
-      alignSelf: 'start',
-      // borderWidth: 1,
       fontFamily: 'Poppins',
       fontSize: 14,
+      color: 'white',
     },
     groupDesc: {
       marginTop: 5,
@@ -68,6 +64,7 @@ const Overview = ({ navigation, groupData }) => {
       fontFamily: 'Poppins',
       fontSize: 14,
       paddingHorizontal: 15,
+      color: 'white',
     },
     selected: {
       backgroundColor: '#B5179E',
@@ -112,14 +109,137 @@ const Overview = ({ navigation, groupData }) => {
     member: {
       height: 75,
       width: 75,
+      borderRadius: 50,
+    },
+    // container: {
+    //   flexGrow: 1,
+    //   alignItems: 'center',
+    //   justifyContent: 'flex-start',
+    //   paddingBottom: 10,
+    //   overflow: 'scroll',
+    //   backgroundColor: 'white',
+    // },
+    headerImage: {
+      width: 200,
+      height: 200,
+      marginTop: 15,
+      borderRadius: 30,
+    },
+    headerName: {
+      fontSize: 30,
+      fontFamily: 'PoppinsBold',
+    },
+    bodyContainerCenter: {
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      marginVertical: 5,
+      marginHorizontal: 15,
+      // borderWidth: 1,
+      // borderColor: 'black',
+    },
+    bodyContainerLeft: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      backgroundColor: 'black',
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+    },
+    groupDescription: {
+      margin: 5,
+      width: '90%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 5,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      // borderWidth: 0.5,
+      borderColor: 'grey',
+      shadowColor: '#171717',
+      shadowOffset: { width: -2, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+    },
+
+    bodyContainerSection: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: 'black',
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      marginBottom: 5,
+    },
+    bodyContainerContentMem: {
+      width: '100%',
+      justifyContent: 'flex-start',
+      paddingHorizontal: 15,
+      backgroundColor: 'black',
+    },
+    bodyContainerSchedule: {
+      // width: '100%',
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      backgroundColor: 'red',
+      marginBottom: 10,
+      padding: 5,
+      borderRadius: 15,
+      // paddingVertical: 0,
+      // paddingHorizontal: 15,
+      // borderWidth: 1,
+      // borderColor: 'black',
+    },
+    bodyContainerMember: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      // width: '100%',
+      backgroundColor: 'black',
+      paddingHorizontal: 15,
+    },
+    textTitle: {
+      fontSize: 20,
+      fontFamily: 'PoppinsBold',
+      color: 'white',
+    },
+    textDetailBold: {
+      fontSize: 15,
+      fontFamily: 'PoppinsBold',
+      color: 'white',
+    },
+    textDetail: {
+      fontSize: 15,
+      fontFamily: 'Poppins',
+      color: 'white',
+      // textDecorationLine: 'underline',
+    },
+    textSeeAll: {
+      fontSize: 15,
+      fontFamily: 'Poppins',
+      textDecorationLine: 'underline',
+      color: 'white',
+    },
+    memberImage: {
+      width: 75,
+      height: 75,
+      borderRadius: 50,
+      margin: 10,
+      // borderColor: 'green',
+      // borderWidth: 1,
     },
   });
 
   // set states
-  const [events, setEvents] = useState([]);
-  const [groupMembers, setGroupMembers] = useState([]);
-  const [group, setGroup] = useState([]);
-  const [plans, setPlans] = useState([]);
+  const [events, setEvents] = useState();
+  const [groupMembers, setGroupMembers] = useState();
+  const [group, setGroup] = useState();
+  const [plans, setPlans] = useState();
 
   // get data
   useEffect(() => {
@@ -160,90 +280,94 @@ const Overview = ({ navigation, groupData }) => {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Image style={styles.main} source={{ uri: groupData.group_image }} />
-        <Text style={styles.name}>{groupData.group_name}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image style={styles.main} source={{ uri: groupData.group_image }} />
+      <Text style={styles.name}>{groupData.group_name}</Text>
+      <Text style={styles.groupDesc}>{groupData.group_description}</Text>
 
-        <View style={styles.rowName}>
-          <Text style={styles.boldDesc}>ORGANIZER</Text>
-          <Text style={styles.desc}>: {group.organizer_name}</Text>
-        </View>
+      <View style={styles.rowName}>
+        <Text style={styles.boldDesc}>ORGANIZER : </Text>
+        <Text style={styles.desc}>{groupData.organizer_name}</Text>
+      </View>
 
-        <Text style={styles.groupDesc}>{groupData.group_description}</Text>
-
-        <View style={styles.separation} />
-
-        <View style={styles.schedule}>
-          <Text style={{ fontSize: 20 }}>
-            <Text
-              style={{
-                alignSelf: 'start',
-                fontFamily: 'PoppinsBold',
-                fontSize: 20,
-              }}
-            >
-              SCHEDULE
-            </Text>
+      <View style={styles.bodyContainerSection}>
+        <Text style={styles.textTitle}>SCHEDULE</Text>
+        {plans && plans.length > 3 && (
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('Schedule', group)}
+          >
+            <Text style={styles.textSeeAll}>SEE ALL</Text>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
+      {plans && plans.length === 0 && (
+        <View style={tw`flex justify-center`}>
+          <Text style={styles.bodyContainerSection}>
+            There is no schedule yet
           </Text>
         </View>
+      )}
 
-        <View
-          style={{
-            alignSelf: 'start',
-            flexDirection: 'column',
-            // borderWidth: 2,
-            width: '100%',
-          }}
-        >
-          {plans
-            .sort((a, b) => a.time.seconds - b.time.seconds)
-            .slice(0, 3)
-            .map((plan) => {
-              let date = plan.time
-                .toDate()
-                .toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-              date = date.slice(10, 22);
-              date = date.split(':');
-              date = `${date[0]}:${date[1]} ${date[2].split(' ')[1]}`;
+      <View style={styles.bodyContainerLeft}>
+        {!!plans && (
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal={false}
+            data={plans.length > 3 ? plans.slice(0, 3) : plans}
+            keyExtractor={(plan) => plan.id.toString()}
+            renderItem={({ item }) => {
               return (
-                <View style={styles.schedules} key={plan.id}>
-                  <Text style={styles.boldDesc}>{date}</Text>
-                  <Text>{plan.description}</Text>
+                <View style={styles.bodyContainerSchedule}>
+                  <Text style={styles.textDetailBold}>
+                    {!!plans &&
+                      new Date(item.time.seconds * 1000).toLocaleTimeString()}
+                  </Text>
+                  <Text style={styles.textDetail}>{item.description}</Text>
                 </View>
               );
-            })}
-        </View>
-
-        <View style={styles.separation} />
-
-        <View style={styles.schedule}>
-          <Text style={{ fontSize: 20 }}>
-            <Text
-              style={{
-                alignSelf: 'start',
-                fontFamily: 'PoppinsBold',
-                fontSize: 20,
-              }}
-            >
-              GROUP MEMBERS
-            </Text>
+            }}
+          />
+        )}
+      </View>
+      <View style={styles.bodyContainerSection}>
+        <Text style={styles.textTitle}>MEMBERS</Text>
+        {groupMembers && groupMembers.length > 3 && (
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('Member', group)}
+          >
+            <Text style={styles.textSeeAll}>SEE ALL</Text>
+          </TouchableWithoutFeedback>
+        )}
+      </View>
+      {groupMembers && groupMembers.length === 0 && (
+        <View style={tw`flex justify-center`}>
+          <Text style={styles.bodyContainerSection}>
+            There is no member yet
           </Text>
         </View>
+      )}
 
-        <View style={styles.tabs}>
-          {groupMembers.map((member) => (
-            <View style={styles.members} key={member.id}>
-              <Image
-                style={styles.member}
-                source={{ uri: member.profile_pic }}
-              />
-              <Text style={{ fontSize: 15, fontFamily: 'Poppins' }}>
-                {member.first_name}
-              </Text>
-            </View>
-          ))}
-        </View>
+      <View style={styles.bodyContainerContentMem}>
+        {groupMembers && (
+          <FlatList
+            data={
+              groupMembers.length > 3 ? groupMembers.slice(0, 3) : groupMembers
+            }
+            // keyExtractor={(member) => member.id.toString()}
+            numColumns={3}
+            renderItem={({ item }) => {
+              return (
+                <View style={styles.bodyContainerMember}>
+                  <Image
+                    style={styles.memberImage}
+                    source={{ uri: item.profile_pic }}
+                  />
+                  <Text style={styles.textDetail}>{item.first_name}</Text>
+                </View>
+              );
+            }}
+          />
+        )}
       </View>
     </ScrollView>
   );
