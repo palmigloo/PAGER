@@ -1,6 +1,7 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
+import tw from 'twrnc';
 import {
   StyleSheet,
   Text,
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingBottom: 10,
     overflow: 'scroll',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
   },
   headerImage: {
     width: 75,
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
   headerName: {
     fontSize: 20,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   bodyContainerCenter: {
     alignItems: 'flex-start',
@@ -50,16 +52,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
     paddingVertical: 5,
     paddingHorizontal: 15,
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   bodyContainerSection: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
     paddingVertical: 5,
     paddingHorizontal: 15,
     marginTop: 5,
@@ -83,21 +85,22 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    backgroundColor: '#F72585',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
     fontFamily: 'PoppinsBold',
-    color: 'white',
     margin: 10,
+    borderRadius: 5,
   },
   buttonText: {
     fontFamily: 'PoppinsBold',
-    color: 'white',
+    color: 'black',
     fontSize: 12,
   },
   textTitle: {
     fontSize: 20,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   textDetailBold: {
     fontSize: 15,
@@ -105,18 +108,19 @@ const styles = StyleSheet.create({
   },
   textDetail: {
     fontSize: 15,
-    fontFamily: 'Poppins',
+    fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   memberImage: {
     width: 75,
     height: 75,
     marginRight: 15,
+    borderRadius: 50,
   },
   bodyContainerName: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
     margin: 10,
   },
   imageName: {
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+
     margin: 5,
   },
 });
@@ -144,36 +148,38 @@ const ExpandedFriends = ({ route }) => {
   const { userId } = useSelector((state) => state.pagerData);
 
   const unfriend = async (friendId) => {
-    // console.log('userId: ', userId);
-    const test = await deleteFriend(userId, friendId);
-    const newFriends = [...friends];
-    console.log('before filter:', newFriends);
-    const newFriendsFilter = newFriends.filter((item) => item.id !== friendId);
-    console.log('after filter: ', newFriendsFilter);
-    setFriends(newFriendsFilter);
+    console.log('userId: ', userId, friendId);
+    await deleteFriend(userId, friendId);
+    const res = await getUser(userId);
+    console.log('new friends list : ', res[0].friends_list);
+    setFriends(res[0].friends_list);
+    route.params.fetchData(userId);
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const res = await getUser(userId);
-      setFriends(res[0].friends_list);
-      setUser(res[0]);
-    }
-    fetchData();
-    // setUser(userData);
-    setMusicTastes(userData.music_tastes);
-    // setFriends(userData.friends_list);
+    setUser(userData);
+    setMusicTastes(userData.user.music_tastes);
+    setFriends(userData.user.friends_list);
+    console.log('friends list : ', userData.user.friends_list);
   }, []);
 
   if (!fontLoaded) {
     return <Loading />;
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.bodyContainerName}>
-        <Image style={styles.headerImage} source={user.profile_pic} />
+        <Image
+          style={tw`rounded-full border border- border-white`}
+          height={100}
+          width={100}
+          source={{ uri: user.user.profile_pic }}
+        />
         <Text style={styles.headerName}>
-          {user.first_name} {user.last_name}
+          {user.user.first_name}
+          {`  `}
+          {user.user.last_name}
         </Text>
       </View>
       <View style={styles.bodyContainerSection}>
@@ -216,13 +222,6 @@ const ExpandedFriends = ({ route }) => {
           />
         )}
       </View>
-
-      {/* <View style={styles.bodyContainerSection}>
-        {friends &&
-          friends.map((item) => (
-            <ExpandedFriendsCard prop={item} key={Math.random()} />
-          ))}
-      </View> */}
     </View>
   );
 };
