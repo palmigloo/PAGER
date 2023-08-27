@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -9,14 +8,12 @@ import {
   View,
   Image,
   Pressable,
-  CheckBox,
-  Alert,
-  Button,
-  TouchableWithoutFeedback,
 } from 'react-native';
-import { editUserData, getUser } from '../../db/user';
+import CheckBox from 'expo-checkbox';
+import { editUserData } from '../../db/user';
 import UserHeader from './UserHeader';
 import TasteCard from './TasteCard';
+import tw from '../../tailwind';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,60 +23,56 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     overflow: 'scroll',
     // overflow-x: 'hidden',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     // borderWidth: 3,
     // borderColor: 'red',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#000000',
+    borderBottomWidth: 0.5,
+    borderColor: 'white',
     padding: 8,
     margin: 10,
-    width: '80%',
-    // height: 40,
-    // margin: 12,
-    // borderWidth: 1,
-    // padding: 10,
+    width: '100%',
+    fontSize: 18,
+    color: 'white',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 32,
-    backgroundColor: '#F72585',
+    backgroundColor: 'white',
     fontFamily: 'PoppinsBold',
-    color: 'white',
-    marginBottom: 5,
+    color: 'black',
+    margin: 25,
+    borderRadius: 15,
+    width: '80%',
   },
   allCheckboxContainer: {
-    flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    marginLeft: 100,
-    maxHeight: '10em',
-    marginBottom: 15,
+    justifyContent: 'space-around',
+    marginBottom: 5,
   },
 
   checkboxContainer: {
     flexBasis: '50%',
-    alignSelf: 'center',
-    justifyContent: 'center',
+    padding: 15,
+    flexDirection: 'row',
   },
 
   checkbox: {
-    alignSelf: 'center',
-    marginTop: -15,
-    marginLeft: -190,
+    marginRight: 10,
   },
   buttonText: {
     fontFamily: 'PoppinsBold',
-    color: 'white',
+    color: 'black',
   },
   bodyContainerName: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     margin: 10,
     // borderWidth: 1,
     // borderColor: 'red',
@@ -89,231 +82,130 @@ const styles = StyleSheet.create({
     height: 75,
     marginRight: 15,
     marginBottom: 15,
+    borderRadius: 50,
   },
   headerName: {
     fontSize: 20,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
   textDetailBold: {
     fontSize: 15,
     fontFamily: 'PoppinsBold',
+    color: 'white',
   },
 });
 
+const musicTastes = [
+  'Techno',
+  'Trance',
+  'Bass',
+  'Garage',
+  'Disco',
+  'House',
+  'Dubstep',
+  'Grime',
+  'Trap',
+  'Other',
+];
+
 const EditProfile = ({ route }) => {
-  // console.log(route.params.user.description);
-  const [likesTechno, setLikesTechno] = useState(false);
-  const [likesHouse, setLikesHouse] = useState(false);
-  const [likesTrance, setLikesTrance] = useState(false);
-  const [likesDubstep, setLikesDubstep] = useState(false);
-  const [likesBass, setLikesBass] = useState(false);
-  const [likesGrime, setLikesGrime] = useState(false);
-  const [likesGarage, setLikesGarage] = useState(false);
-  const [likesTrap, setLikesTrap] = useState(false);
-  const [likesDisco, setLikesDisco] = useState(false);
-  const [likesOther, setLikesOther] = useState(false);
   const userData = route.params.user;
   const { userId } = useSelector((state) => state.pagerData);
   const [description, setDescription] = useState('');
-  const [musicTastes, setMusicTastes] = useState([]);
   const [user, setUser] = useState([]);
-  const [placeholdertext, setPlaceholdertext] = useState('');
-  useEffect(() => {
-    // const response = await getUser('QZ6KFysQsp7CG9DcicIh');
-    // console.log('response: ', response);
-    async function fetchData() {
-      const res = await getUser(userId);
-      // console.log(res[0].music_tastes);
-      setUser(res[0]);
-      setMusicTastes(res[0].music_tastes);
-    }
-    fetchData();
-    const tastesArray = [...route.params.user.music_tastes];
-    // console.log('copy: ', tastesArray);
-    for (let i = 0; i < tastesArray.length; i += 1) {
-      console.log(tastesArray[i]);
-      if (tastesArray[i] === 'techno') {
-        setLikesTechno(true);
-      }
-      if (tastesArray[i] === 'house') {
-        setLikesHouse(true);
-      }
-      if (tastesArray[i] === 'trance') {
-        console.log('trance');
-        setLikesTrance(true);
-      }
-      if (tastesArray[i] === 'dubstep') {
-        setLikesDubstep(true);
-      }
-      if (tastesArray[i] === 'bass') {
-        setLikesBass(true);
-      }
-      if (tastesArray[i] === 'garage') {
-        setLikesGarage(true);
-      }
-      if (tastesArray[i] === 'trap') {
-        setLikesTrap(true);
-      }
-      if (tastesArray[i] === 'disco') {
-        setLikesDisco(true);
-      }
-      if (tastesArray[i] === 'other') {
-        setLikesOther(true);
-      }
-    }
 
-    // setUser(userData);
-    // console.log(route.params.user.description);
-    // setPlaceholdertext(route.params.user.description);
-    // console.log('useffect');
+  useEffect(() => {
+    setUser(userData);
+    setDescription(route.params.user.description);
+    console.log('description is : ', route.params.user);
   }, []);
+
+  const tastes = route.params.user.music_tastes;
+
+  const [likesTechno, setLikesTechno] = useState(tastes.includes('techno'));
+  const [likesHouse, setLikesHouse] = useState(tastes.includes('house'));
+  const [likesTrance, setLikesTrance] = useState(tastes.includes('trance'));
+  const [likesDubstep, setLikesDubstep] = useState(tastes.includes('dubstep'));
+  const [likesBass, setLikesBass] = useState(tastes.includes('bass'));
+  const [likesGrime, setLikesGrime] = useState(tastes.includes('grime'));
+  const [likesGarage, setLikesGarage] = useState(tastes.includes('garage'));
+  const [likesTrap, setLikesTrap] = useState(tastes.includes('trap'));
+  const [likesDisco, setLikesDisco] = useState(tastes.includes('disco'));
+  const [likesOther, setLikesOther] = useState(tastes.includes('other'));
+
+  const musicMap = {
+    Techno: [likesTechno, setLikesTechno],
+    Trance: [likesTrance, setLikesTrance],
+    Bass: [likesBass, setLikesBass],
+    Garage: [likesGarage, setLikesGarage],
+    Grime: [likesGrime, setLikesGrime],
+    Trap: [likesTrap, setLikesTrap],
+    Disco: [likesDisco, setLikesDisco],
+    Dubstep: [likesDubstep, setLikesDubstep],
+    House: [likesHouse, setLikesHouse],
+    Other: [likesOther, setLikesOther],
+  };
+  const [value, setValue] = React.useState({
+    music_tastes: [],
+  });
+
+  function addMusicTaste() {
+    if (likesTechno) value.music_tastes.push('techno');
+    if (likesHouse) value.music_tastes.push('house');
+    if (likesTrance) value.music_tastes.push('trance');
+    if (likesDubstep) value.music_tastes.push('dubstep');
+    if (likesBass) value.music_tastes.push('bass');
+    if (likesGrime) value.music_tastes.push('grime');
+    if (likesGarage) value.music_tastes.push('garage');
+    if (likesTrap) value.music_tastes.push('trap');
+    if (likesDisco) value.music_tastes.push('disco');
+    if (likesOther) value.music_tastes.push('other');
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.bodyContainerName}>
-        <Image style={styles.headerImage} source={user.profile_pic} />
+        <Image style={styles.headerImage} source={{ uri: user.profile_pic }} />
         <Text style={styles.headerName}>
           {user.first_name} {user.last_name}
         </Text>
       </View>
-      <Text style={styles.textDetailBold}>EDIT DESCRIPTION:</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={(val) => setDescription(val)}
-        // placeholder="Update description here."
-        placeholder={user.description}
-      />
+      <View style={tw`flex-col justify-center items-start w-8/10 pb-5`}>
+        <Text style={styles.textDetailBold}>NEW DESCRIPTION:</Text>
+        <TextInput
+          style={styles.input}
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Update description here."
+        />
+      </View>
+      <View style={tw`flex-col justify-center items-start w-8/10`}>
+        <Text style={styles.textDetailBold}>FAVORITE GENRES:</Text>
 
-      <Text style={styles.textDetailBold}>FAVORITE GENRES:</Text>
-      <View style={styles.allCheckboxContainer}>
-        <View style={styles.checkboxContainer}>
-          <Text>Techno</Text>
-          <CheckBox
-            value={likesTechno}
-            onValueChange={setLikesTechno}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>House</Text>
-          <CheckBox
-            value={likesHouse}
-            onValueChange={setLikesHouse}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Trance</Text>
-          <CheckBox
-            value={likesTrance}
-            onValueChange={setLikesTrance}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Dubstep</Text>
-          <CheckBox
-            value={likesDubstep}
-            onValueChange={setLikesDubstep}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Bass</Text>
-          <CheckBox
-            value={likesBass}
-            onValueChange={setLikesBass}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Grime</Text>
-          <CheckBox
-            value={likesGrime}
-            onValueChange={setLikesGrime}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Garage</Text>
-          <CheckBox
-            value={likesGarage}
-            onValueChange={setLikesGarage}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Trap</Text>
-          <CheckBox
-            value={likesTrap}
-            onValueChange={setLikesTrap}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Disco</Text>
-          <CheckBox
-            value={likesDisco}
-            onValueChange={setLikesDisco}
-            style={styles.checkbox}
-          />
-        </View>
-        <View style={styles.checkboxContainer}>
-          <Text>Other</Text>
-          <CheckBox
-            value={likesOther}
-            onValueChange={setLikesOther}
-            style={styles.checkbox}
-          />
+        <View style={styles.allCheckboxContainer}>
+          {musicTastes.map((taste) => (
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                value={musicMap[taste][0]}
+                onValueChange={musicMap[taste][1]}
+                style={styles.checkbox}
+              />
+              <Text style={styles.textDetailBold}>{taste}</Text>
+            </View>
+          ))}
         </View>
       </View>
       <Pressable
         style={styles.button}
         onPress={() => {
-          // console.log(description);
-          setPlaceholdertext('');
-          const musicTastesData = [];
-          for (let i = 0; i < musicTastes.length; i += 1) {
-            // console.log(musicTastes);
-            if (likesTechno) {
-              musicTastesData.push('techno');
-            }
-            if (likesHouse) {
-              musicTastesData.push('house');
-            }
-            if (likesTrance) {
-              musicTastesData.push('trance');
-            }
-            if (likesDubstep) {
-              musicTastesData.push('dubstep');
-            }
-            if (likesBass) {
-              musicTastesData.push('bass');
-            }
-            if (likesGarage) {
-              musicTastesData.push('garage');
-            }
-            if (likesTrap) {
-              musicTastesData.push('trap');
-            }
-            if (likesDisco) {
-              musicTastesData.push('disco');
-            }
-            if (likesOther) {
-              musicTastesData.push('other');
-            }
-          }
-          const uniqueTastesData = [...new Set(musicTastesData)];
-          // console.log('array with unique data: ', uniqueTastesData);
-          const descriptionObject = { description: description };
-          editUserData(userId, { description });
-          const dataObject = { music_tastes: uniqueTastesData };
-          editUserData(userId, dataObject);
-          route.params.onEdit(description);
-          route.params.onEdit1(uniqueTastesData);
+          // setDescription('');
+          addMusicTaste();
+          editUserData(userId, description, value.music_tastes);
+          route.params.fetchData(userId);
         }}
       >
-        <Text style={styles.buttonText}>SAVE CHANGES</Text>
+        <Text style={styles.buttonText}>Update</Text>
       </Pressable>
     </View>
   );
