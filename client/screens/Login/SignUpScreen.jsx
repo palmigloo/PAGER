@@ -1,30 +1,39 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  CheckBox,
-  ImageBackground,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { StyleSheet, Text, View, ImageBackground, Form } from 'react-native';
+import CheckBox from 'expo-checkbox';
 import { Input, Button } from 'react-native-elements';
-import { StackScreenProps } from '@react-navigation/stack';
-import globalStyles from '../../globalStyles';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import * as DocumentPicker from 'expo-document-picker';
+import { ScrollView } from 'react-native-gesture-handler';
 import { addUser, setUserInfo } from '../../db/user.js';
 // -- redux import statements
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserId } from '../../reducers/index.js';
-import * as DocumentPicker from 'expo-document-picker';
 import gif from '../../assets/raveWelcome.gif';
+import { Link } from '@react-navigation/native';
+import tw from '../../tailwind.js';
 
 const auth = getAuth();
 
-const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
+const musicTastes = [
+  'Techno',
+  'Trance',
+  'Bass',
+  'Garage',
+  'Disco',
+  'House',
+  'Dubstep',
+  'Grime',
+  'Trap',
+  'Other',
+];
+
+const SignUpScreen = ({ navigation }) => {
   // -- redux import statements
-  const { userId } = useSelector((state) => state.pagerData);
+  // const { userId } = useSelector((state) => state.pagerData);
   const dispatch = useDispatch();
   const [isOverEighteen, setIsOverEighteen] = useState(false);
+
   const [likesTechno, setLikesTechno] = useState(false);
   const [likesHouse, setLikesHouse] = useState(false);
   const [likesTrance, setLikesTrance] = useState(false);
@@ -35,6 +44,19 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
   const [likesTrap, setLikesTrap] = useState(false);
   const [likesDisco, setLikesDisco] = useState(false);
   const [likesOther, setLikesOther] = useState(false);
+  const musicMap = {
+    Techno: [likesTechno, setLikesTechno],
+    Trance: [likesTrance, setLikesTrance],
+    Bass: [likesBass, setLikesBass],
+    Garage: [likesGarage, setLikesGarage],
+    Disco: [likesDisco, setLikesDisco],
+    House: [likesHouse, setLikesHouse],
+    Dubstep: [likesDubstep, setLikesDubstep],
+    Grime: [likesGrime, setLikesGrime],
+    Trap: [likesTrap, setLikesTrap],
+    Other: [likesOther, setLikesOther],
+  };
+
   const [userImg, setUserImg] = useState({});
   const [isUploaded, setIsUploaded] = useState(false);
   const [value, setValue] = React.useState({
@@ -48,7 +70,7 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
   });
 
   const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
+    const result = await DocumentPicker.getDocumentAsync({});
     // console.log(result);
     setUserImg(result);
     setIsUploaded(true);
@@ -62,8 +84,8 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
     if (likesTrance) value.music_tastes.push('trance');
     if (likesDubstep) value.music_tastes.push('dubstep');
     if (likesBass) value.music_tastes.push('bass');
-    if (likesGrime) value.music_tastes.push('garage');
-    if (likesGarage) value.music_tastes.push('grime');
+    if (likesGrime) value.music_tastes.push('grime');
+    if (likesGarage) value.music_tastes.push('garage');
     if (likesTrap) value.music_tastes.push('trap');
     if (likesDisco) value.music_tastes.push('disco');
     if (likesOther) value.music_tastes.push('other');
@@ -88,7 +110,7 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
 
     try {
       addMusicTaste();
-      // console.log(value, 'value is', value.music_tastes, 'value.music tastes');
+      console.log(value, 'value is', value.music_tastes, 'value.music tastes');
       const id = await addUser({
         email: value.email,
         password: value.password,
@@ -96,28 +118,29 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
         last_name: value.lastName,
         birthday: '',
         music_tastes: value.music_tastes,
-        group_list: [''],
-        friends_list: [''],
+        group_list: [],
+        friends_list: [],
         description: value.description,
       });
       try {
+        console.log('the add user id is : ', id);
         await dispatch(updateUserId(id));
       } catch (err) {
         console.log(err);
       }
-      // console.log('we are sending userId and userImg to setUserinfo', userId, userImg);
       try {
-        await setUserInfo(userId, userImg, {
+        await setUserInfo(id, userImg, {
           email: value.email,
           password: value.password,
           first_name: value.firstName,
           last_name: value.lastName,
           birthday: '',
           music_tastes: value.music_tastes,
-          group_list: [''],
-          friends_list: [''],
+          group_list: [],
+          friends_list: [],
           description: value.description,
         });
+        console.log('i am done with set user image');
       } catch (err) {
         console.log(err);
       }
@@ -135,224 +158,181 @@ const SignUpScreen: React.FC<StackScreenProps<any>> = ({ navigation }) => {
     }
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      // paddingTop: 20,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      overflow: 'scroll',
+    },
+
+    controls: {
+      alignSelf: 'center',
+      width: '80%',
+    },
+
+    btnStyleSubmit: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'black',
+      fontFamily: 'PoppinsBold',
+      color: 'white',
+      borderRadius: 20,
+      cursor: 'pointer',
+      padding: 15,
+    },
+
+    label: {
+      alignSelf: 'center',
+      justifyContent: 'center',
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+
+    allCheckboxContainer: {
+      paddingVertical: 15,
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 5,
+    },
+
+    checkboxContainer: {
+      flexBasis: '28%',
+      padding: 5,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      // borderColor: 'red',
+      // borderWidth: 1,
+    },
+    btnStyleUpload: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      fontFamily: 'PoppinsBold',
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: 'grey',
+      padding: 13,
+    },
+
+    checkbox: {
+      marginRight: 7,
+    },
+
+    control: {
+      marginRight: 10,
+    },
+
+    image: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+
+    error: {
+      marginTop: 10,
+      padding: 10,
+      color: '#fff',
+      backgroundColor: '#D54826FF',
+    },
+  });
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {value.error && (
         <View style={styles.error}>
           <Text>{value.error}</Text>
         </View>
       )}
 
-      <View style={styles.controls}>
+      <View style={tw`w-4/5`}>
         <Input
           placeholder="Email"
           containerStyle={styles.control}
           value={value.email}
           onChangeText={(text) => setValue({ ...value, email: text })}
-          leftIcon={<Icon name="envelope" size={16} />}
+          // leftIcon={<Icon name="envelope" size={16} />}
         />
         <Input
           placeholder="Password"
           containerStyle={styles.control}
           value={value.password}
           onChangeText={(text) => setValue({ ...value, password: text })}
-          secureTextEntry={true}
-          leftIcon={<Icon name="key" size={16} />}
+          secureTextEntry
         />
         <Input
           placeholder="First Name"
           containerStyle={styles.control}
           value={value.firstName}
           onChangeText={(text) => setValue({ ...value, firstName: text })}
-          leftIcon={<Icon name="user" size={16} />}
         />
         <Input
           placeholder="Last Name"
           containerStyle={styles.control}
           value={value.lastName}
           onChangeText={(text) => setValue({ ...value, lastName: text })}
-          leftIcon={<Icon name="user" size={16} />}
         />
         <Input
           placeholder="Description: ex (I <3 Flow Toys)"
           containerStyle={styles.control}
           value={value.description}
           onChangeText={(text) => setValue({ ...value, description: text })}
-          leftIcon={<Icon name="newspaper-o" size={16} />}
+          // leftIcon={<Icon name="newspaper-o" size={16} />}
         />
-        {isUploaded ? (
-          <Text style={{ alignSelf: 'center' }}>Profile Image Uploaded!</Text>
-        ) : null}
-        <View style={{ marginBottom: -10 }}>
+        <View>
           <Button
-            buttonStyle={globalStyles.button}
-            title="Upload Profile Image"
+            buttonStyle={styles.btnStyleUpload}
+            titleStyle={{ color: 'black', fontFamily: 'PoppinsBold' }}
+            title="UPLOAD IMAGE"
             onPress={pickDocument}
           />
+
+          {isUploaded && (
+            <Text style={{ alignSelf: 'center', color: 'red', paddingTop: 10 }}>
+              Profile Image Uploaded!
+            </Text>
+          )}
         </View>
         <View
           style={{
             marginTop: 15,
-            marginBottom: 15,
+            marginBottom: 30,
             justifyContent: 'center',
+            alignItems: 'center',
             alignSelf: 'center',
+            flexDirection: 'row',
           }}
         >
-          <Text style={{ marginLeft: 10 }}>I confirm that I'm 18+</Text>
-          <CheckBox
-            value={isOverEighteen}
-            onValueChange={setIsOverEighteen}
-            style={styles.checkbox}
-          />
+          <CheckBox value={isOverEighteen} onValueChange={setIsOverEighteen} />
+          <Text style={{ paddingLeft: 10, fontFamily: 'PoppinsBold' }}>
+            I confirm that I'm 18+
+          </Text>
         </View>
         <Text style={styles.label}>FAVORITE GENRES</Text>
         <View style={styles.allCheckboxContainer}>
-          <View style={styles.checkboxContainer}>
-            <Text>Techno</Text>
-            <CheckBox
-              value={likesTechno}
-              onValueChange={setLikesTechno}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>House</Text>
-            <CheckBox
-              value={likesHouse}
-              onValueChange={setLikesHouse}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Trance</Text>
-            <CheckBox
-              value={likesTrance}
-              onValueChange={setLikesTrance}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Dubstep</Text>
-            <CheckBox
-              value={likesDubstep}
-              onValueChange={setLikesDubstep}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Bass</Text>
-            <CheckBox
-              value={likesBass}
-              onValueChange={setLikesBass}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Grime</Text>
-            <CheckBox
-              value={likesGrime}
-              onValueChange={setLikesGrime}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Garage</Text>
-            <CheckBox
-              value={likesGarage}
-              onValueChange={setLikesGarage}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Trap</Text>
-            <CheckBox
-              value={likesTrap}
-              onValueChange={setLikesTrap}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Disco</Text>
-            <CheckBox
-              value={likesDisco}
-              onValueChange={setLikesDisco}
-              style={styles.checkbox}
-            />
-          </View>
-          <View style={styles.checkboxContainer}>
-            <Text>Other</Text>
-            <CheckBox
-              value={likesOther}
-              onValueChange={setLikesOther}
-              style={styles.checkbox}
-            />
-          </View>
+          {musicTastes.map((taste) => (
+            <View style={styles.checkboxContainer}>
+              <CheckBox
+                value={musicMap[taste][0]}
+                onValueChange={musicMap[taste][1]}
+                style={styles.checkbox}
+              />
+              <Text>{taste}</Text>
+            </View>
+          ))}
         </View>
         <Button
-          title="Sign up"
-          buttonStyle={globalStyles.button}
+          title="SIGN UP"
+          buttonStyle={styles.btnStyleSubmit}
+          titleStyle={{ color: 'white', fontFamily: 'PoppinsBold' }}
           onPress={signUp}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-
-  controls: {
-    flex: 1,
-    alignSelf: 'center',
-    width: '80%',
-  },
-
-  label: {
-    alignSelf: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-
-  allCheckboxContainer: {
-    flex: 1,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    marginLeft: 100,
-    maxHeight: '10em',
-  },
-
-  checkboxContainer: {
-    flexBasis: '50%',
-    alignSelf: 'center',
-    justifyContent: 'center',
-  },
-
-  checkbox: {
-    alignSelf: 'center',
-    marginTop: -15,
-    marginLeft: -150,
-  },
-
-  control: {
-    marginTop: 10,
-  },
-
-  image: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-
-  error: {
-    marginTop: 10,
-    padding: 10,
-    color: '#fff',
-    backgroundColor: '#D54826FF',
-  },
-});
 
 export default SignUpScreen;
